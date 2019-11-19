@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title></title>
+    <style>
+        body,p,h1{
+            margin: 0;
+            padding: 0;
+        }
+        #box{
+            width: 320px;
+            height: 568px;
+            margin: 10px auto;
+            background: url("images/background_1.png");
+            position: relative;
+            overflow: hidden;
+        }
+        #total{
+            display: none;
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        #startbox{
+            width: 160px;
+            height: 150px;
+            position: absolute;
+            top: 210px;
+            left: 80px;
+        }
+        #startbox h1{
+            text-align: center;
+            padding-bottom: 20px;
+            animation: fontColor 5s linear infinite;
+        }
+        @keyframes fontColor{
+            0%{
+                color:darkkhaki;
+            }
+            25%{
+                color:cadetblue;
+            }
+            50%{
+                color:darkgreen;
+            }
+            75%{
+                color:darkorange;
+            }
+            100%{
+                color:darksalmon;
+            }
+        }
+        #start{
+            padding: 15px 35px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="box">
+        <div id="total">
+            <p>敌机数：<span id="kill">0</span></p>
+            <p>总分数：<span id="score">0</span></p>
+        </div>
+        <div id="startbox">
+            <h1>Play Gm</h1>
+            <button id="start">Start Game</button>
+        </div>
+    </div>
+    <script>
+        var box=document.querySelector('#box'),
+        totalBox=document.querySelector('#total'),
+        startBox=document.querySelector('#startbox'),
+        startBtn=document.querySelector('#start'),
+        killNum=document.querySelector('#kill'),
+        killScore=document.querySelector('#score');
+
+        var player;
+        var bLeft=false,
+            bRight=false,
+            bTop=false,
+            bDown=false;
+        var bullerArr=[];
+        var PlaneArray=[];
+        var timer1,timer2,time3,timer4,timer5
+        // 开始
+        startBtn.onclick=function(){
+            // 隐藏界面
+            startBox.style.display = 'none';
+            totalBox.style.display = 'block';
+            // 玩家出现
+            player = new Player(0,488,'images/myplane.gif',4);
+            // 敌机出现
+            // setInterval(function(){
+            //     new EnemyPlane(ran(0,286),0,'images/enemy1_fly_1.png',2);
+            // },700)
+            timer1=setInterval(playMove,50);
+            timer2=setInterval(bulletMove,50);
+            timer3=setInterval(createPlane,1000);
+            timer4=setInterval(PlaneMove,50);  
+	        timer5=setInterval(checkBoom,200);
+        }
+        function ran(n,m){
+            return Math.floor(Math.random()*(m-n)+n)
+        }
+
+        // 构造敌机
+        //敌机出现
+        function createPlane(){
+            var Plane=new EnemyPlane(ran(0,286),0,'images/enemy1_fly_1.png',2)
+            PlaneArray.push(Plane);
+        }
+        
+        function EnemyPlane(x,y,src,speed){
+            // 创建节点
+            this.node=document.createElement('img');
+            this.isDead=false;
+            this.deadTime=3;
+            this.src=src;
+            this.x=x;
+            this.y=y;
+            this.speed=speed;
+            // 初始化
+            this.init();
+        }
+        // 初始化
+        EnemyPlane.prototype.init=function(){
+            // 给节点加样式
+            this.node.src=this.src;
+            this.node.style.position='absolute';
+            this.node.style.top=this.y+'px';//控制敌机离顶部的距离
+            this.node.style.left=this.x+'px';//控制敌机离左边的距离
+            box.appendChild(this.node);
+        }
+        // 移动
+        EnemyPlane.prototype.move=function(){
+            this.node.style.top=this.node.offsetTop+this.speed+'px';//控制敌机离顶部的距离
+        }
+        function PlaneMove(){
+            for(i=0;i<PlaneArray.length;i++)
+                {
+                    if(PlaneArray[i].isDead){
+                        PlaneArray[i].deadTime--;
+                        if(PlaneArray[i].deadTime<=0){
+                            box.removeChild(PlaneArray[i].node);
+                            PlaneArray.splice(i,1);
+                        }
+                    }
+                    if(PlaneArray[i].node.offsetTop>=568){
+                            box.removeChild(PlaneArray[i].node);//移除子节点
+                            PlaneArray.splice(i,1);//数组中删除数组元素
+                        }else{
+                            PlaneArray[i].move();
+                        }
+                }
+        }
+
+        // 玩家的构造函数
+        function Player(x,y,src,speed){
+            // 创建节点
+            this.node=document.createElement('img');
+            this.src=src;
+            this.x=x;
+            this.y=y;
+            this.speed=speed;
+            // 初始化
+            this.init();
+        }
+        // 构造函数
+        Player.prototype.init=function(){
+            this.node.src=this.src;
+            this.node.style.position='absolute';
+            this.node.style.top=this.y+'px';//控制玩家离顶部的距离
+            this.node.style.left=this.x+'px';//控制玩家离左边的距离
+            box.appendChild(this.node);//添加子节点
+        }
+        // Player.prototype.move=function(){
+        //     this.node.style.top=this.node.style.top-this.speed+'px';
+        // }
+        Player.prototype.toTop=function(){
+            // this.node.style.top=this.node.offsetTop-this.speed+'px';
+            var t=this.node.offsetTop-this.speed;
+            if(t<=0){
+                t=0;
+            }
+            this.node.style.top=t+'px';
+        }
+        Player.prototype.toDown=function(){
+            // this.node.style.top=this.node.offsetTop+this.speed+'px';
+            var t=this.node.offsetTop+this.speed;
+            if(t>=488){
+                t=488;
+            }
+            this.node.style.top=t+'px';
+        }
+        Player.prototype.toLeft=function(){
+            // this.node.style.left=this.node.offsetLeft-this.speed+'px';
+            var t=this.node.offsetLeft-this.speed;
+            if(t<=0){
+                t=0;
+            }
+            this.node.style.left=t+'px';
+        }
+        Player.prototype.toRight=function(){
+            // this.node.style.left=this.node.offsetLeft+this.speed+'px';
+            var t=this.node.offsetLeft+this.speed;
+            if(t>=254){
+                t=254;
+            }
+            this.node.style.left=t+'px';
+        }
+        Player.prototype.shoot=function(){
+            bullerArr.push(new Bullet('images/bullet1.png',player.node.offsetLeft+(33-3),player.node.offsetTop-14,6));
+        }
+        document.onkeydown=function(e){
+            switch(e.keyCode){
+                case 37://左按钮
+                    bLeft=true;
+                    // player.toLeft();
+                break;
+                case 38://上按键
+                    bTop=true;
+                    // player.toTop();
+                break;
+                case 39://右按键
+                    bRight=true;
+                    // player.toRight();
+                break;
+                case 40://下按键
+                    bDown=true;
+                    // player.toDown();
+                break;
+                case 32://空格
+                    player.shoot();
+                break;
+            }
+        }
+        document.onkeyup=function(e){
+            switch(e.keyCode){
+                case 37://左按钮
+                    bLeft=false;
+                    // player.toLeft();
+                break;
+                case 38://上按键
+                    bTop=false;
+                    // player.toTop();
+                break;
+                case 39://右按键
+                    bRight=false;
+                    // player.toRight();
+                break;
+                case 40://下按键
+                    bDown=false;
+                    // player.toDown();
+                break;
+            }
+        }
+        function playMove(){
+            if(bTop){
+                player.toTop();
+            }
+            if(bDown){
+                player.toDown();
+            }
+            if(bLeft){
+                player.toLeft();
+            }
+            if(bRight){
+                player.toRight();
+            }
+        }
+
+        // 子弹构造函数
+        function Bullet(src,x,y,speed){
+            //创建节点
+            this.node=document.createElement('img');
+            //赋值
+            this.src=src;
+            this.x=x;
+            this.y=y;
+            this.speed=speed;
+            this.init();
+        }
+        Bullet.prototype.init=function(){
+            this.node.src=this.src;
+            this.node.style.position='absolute';
+            this.node.style.top=this.y+'px';
+            this.node.style.left=this.x+'px';
+            box.appendChild(this.node);
+        }
+        Bullet.prototype.move=function(){
+            this.node.style.top=this.node.offsetTop-this.speed+'px';
+        }
+        function bulletMove(){
+            for(var i=0;i<bullerArr.length;i++){
+                if(bullerArr[i].node.offsetTop<=-3){
+                    box.removeChild(bullerArr[i].node);//删除
+                    bullerArr.splice(i,1);//文档中的子弹节点
+                }else
+                bullerArr[i].move();
+            }
+        }
+
+        // 子弹敌机撞击事件
+        function checkBoom(){
+            for(var i=0;i<PlaneArray.length;i++){
+                    var bleft=player.node.offsetLeft;//玩家左边
+                    var bright=player.node.offsetLeft+player.node.offsetWidth;//玩家右边
+                    var btop=player.node.offsetTop;//玩家上边
+                    var bdown=player.node.offsetLeft+player.node.offsetHeight;//玩家下边
+                    var Pleft=PlaneArray[i].node.offsetLeft;//小飞机左边
+                    var Ptop=PlaneArray[i].node.offsetTop;//小飞机上边
+                    var Pwidth=PlaneArray[i].node.offsetWidth;//小飞机宽度
+                    var Pheight=PlaneArray[i].node.offsetHeight;//小飞机高度
+                    //判断玩家和敌机碰撞
+                    if((bleft>=Pleft&&bleft<=Pleft+Pwidth&&btop>=Ptop&&btop<=Ptop+Pheight) || (bright>=Pleft&&bright<=Pleft+Pwidth&&bdown>=Ptop&&bdown<=Ptop+Pheight)){
+                        player.node.src='images/boom.png';
+                        setTimeout(() => {
+                            over();
+                        }, 50);
+                    }
+                for(var j=0;j<bullerArr.length;j++){
+                    var bleft=bullerArr[j].node.offsetLeft;//子弹的左边
+                    var btop=bullerArr[j].node.offsetTop;//子弹的上边
+                    var Pleft=PlaneArray[i].node.offsetLeft;//小飞机左边
+                    var Ptop=PlaneArray[i].node.offsetTop;//小飞机上边
+                    var Pwidth=PlaneArray[i].node.offsetWidth;//小飞机宽度
+                    var Pheight=PlaneArray[i].node.offsetHeight;//小飞机高度
+                    //判断边距是否接触
+                    if(bleft>=Pleft&&bleft<=Pleft+Pwidth&&btop>=Ptop&&btop<=Ptop+Pheight){
+                        box.removeChild(bullerArr[j].node);//移除子弹的子节点
+                        bullerArr.splice(j,1);//子弹数组中删除元素
+                        PlaneArray[i].node.src='images/smallplaneboom.gif';
+                        PlaneArray[i].isDead=true;
+                        //自执行函数
+                        // (function(index){
+                        //     setTimeout(() => {
+                        //     box.removeChild(PlaneArray[index].node);//移除子节点
+                        //     PlaneArray.splice(index,1);//数组中删除数组元素
+                        // }, 50)})(i);
+                        //杀敌积分及杀敌数
+                        killNum.innerHTML=parseInt(killNum.innerHTML)+1;
+                        killScore.innerHTML=parseInt(killScore.innerHTML)+3;
+                    }
+                }
+            }
+        }
+
+        //游戏结束
+        function over(){
+            var allImg=document.querySelectorAll('img');
+            startBox.style.display="block";
+            totalBox.style.display = 'block';
+            allImg.forEach(function(v){
+                box.removeChild(v);
+            })
+            clearInterval(timer1);
+            clearInterval(timer2);
+            clearInterval(timer3);
+            clearInterval(timer4);
+            clearInterval(timer5);
+            killNum.innerHTML=0;
+            killScore.innerHTML=0;
+        }
+    </script>
+</body>
+</html>

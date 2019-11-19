@@ -1,0 +1,57 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        div{
+            width: 100px;
+            height: 100px;
+        }
+        #div1{
+            background: pink;
+            position: absolute;
+            left: 100px;
+            top: 100px;
+        }
+        #div2{
+            background: orange;
+            position: absolute;
+            left: 300px;
+            top: 100px;
+        }
+    </style>
+</head>
+<body>
+    <div id="div1"></div>
+    <div id="div2"></div>
+
+    <script>
+            var div1=document.querySelector("#div1"),
+                div2=document.querySelector("#div2")
+            div1.onmousedown=function(e){
+                var disx=e.offsetX;//事件相对调用元素的水平偏移
+                var disy=e.offsetY;
+                document.onmousemove=function(e){
+                    var l=e.clientX-disx;//事件相对于浏览器左边的偏移
+                    var r=e.clientY-disy;
+                    div1.style.left=l+'px';
+                    div1.style.top=r+'px';
+                    if(div1.offsetLeft>div2.offsetLeft+100 || 
+                        div1.offsetLeft+100<div2.offsetLeft || 
+                        div1.offsetTop>div2.offsetTop+100 || 
+                        div1.offsetTop+100<div2.offsetTop){
+                        div1.style.background="red";
+                    }else{
+                        div1.style.background="yellow"
+                    }
+                }
+                document.onmouseup=function(){
+                    document.onmousemove=null;
+                }
+            }
+        </script>
+    
+</body>
+<ml>
