@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>好记小本</title>
+    <link rel="stylesheet" href="__STATIC__/bootstrap-4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__STATIC__/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="__JS__/jquery-3.3.1.min.js"></script>
+    <script src="__STATIC__/bootstrap-4.1.3/js/popper.min.js"></script>
+    <script src="__STATIC__/bootstrap-4.1.3/js/bootstrap.min.js"></script>
+    <script src="__STATIC__/jquery-validation-1.19.0/dist/jquery.validate.min.js"></script>
+    <script src="__STATIC__/jquery-validation-1.19.0/dist/localization/messages_zh.js"></script>
+    <link href='__STATIC__/css/index.css' rel="stylesheet"></link>
+    <link rel="stylesheet" href="__STATIC__/layui-v2.5.5/layui/css/layui.css">
+    <script src="__STATIC__/layui-v2.5.5/layui/layui.js"></script>
+</head>
+<style>
+body{
+    width:100%;
+    padding: 0;
+    margin: 0;
+    /* overflow: hidden; */
+}
+/* 导航 */
+.header {
+    position: fixed;
+    width: 0px;
+    margin-top: 4%;
+    overflow: visible;
+    z-index: 12;
+}
+
+.title {
+    display: block;
+    float: right;
+    clear: both;
+    border:1px solid white;
+}
+
+.card {
+    position: relative;
+    left: 32px;
+    padding: 16px 32px 16px 64px;
+    background: #fff;
+    transition: all 0.3s ease-in-out 0.1s;
+}
+
+.card:hover {
+    position: relative;
+    left: 100%;
+    margin-left: -32px;
+    transition: all 0.3s ease-in-out;
+}
+
+.content {
+    display: inline-block;
+    color: #fff;
+    white-space: nowrap;
+}
+.header a:hover{
+    text-decoration: none;
+}
+.br{
+    margin-left: 13%;
+    margin-top: 10px;
+}
+.br1{
+    width: 60%;
+    height: 15px;
+    margin-left: 26%;
+    margin-top:-30px;
+    background-color: rgb(105, 125, 130);
+}
+.nr1{
+    width: 73%;
+    height: 90px;
+    margin-left: 13%;
+    margin-top:30px;
+}
+.nr2{
+    width: 73%;
+    height: auto;
+    margin-left: 13%;
+    margin-top:30px;
+}
+
+.bg-01 { background: rgb(180, 205, 205);}
+.bg-02 { background: rgb(219,112,147);}
+.bg-03 { background: rgb(144,238,144);}
+.bg-04 { background: rgb(255,215,0);}
+.bg-05 { background: rgb(255,127,80);}
+.bg-06 { background: rgb(105, 125, 130);}
+</style>
+<body>
+    <!-- 导航 -->
+    <div class='header'>
+        <div class='title'>
+            <a href='/index/index/index' target="_self">
+                <div class='card bg-01'>
+                    <span class='content'><i class="fa fa-edit"></i> 首页</span>
+                </div>
+            </a>
+        </div>
+        <div class='title'>
+            <a href='/index/bill/index' target="_self">
+                <div class='card bg-02'>
+                    <span class='content'><i class="fa fa-clone"></i> 账单</span>
+                </div>
+            </a>
+        </div>
+        <div class='title'>
+            <a href='/index/title/index' target="_self">
+                <div class='card bg-03'>
+                    <span class='content'><i class="fa fa-file-word-o"></i> 资讯</span>
+                </div>
+            </a>
+        </div>
+        <div class='title'>
+            <a href='/index/notice/index' target="_self">
+                <div class='card bg-04'>
+                    <span class='content'><i class="fa fa-bell-o"></i> 通知</span>
+                </div>
+            </a>
+        </div>
+        {if !$uid}
+        <div class='title'>
+            <a href='/index/customer/login' target="_self">
+                <div class='card bg-05'>
+                    <span class='content' id="user"><i class="fa fa-user-circle-o"></i>登录</span>
+                </div>
+            </a>
+        </div>
+        {/if}
+        {if $uid}
+        <div class='title'>
+            <a href='/index/index/logout' target="_self">
+                <div class='card bg-06'>
+                    <span class='content'><i class="fa fa-sign-out"></i> 安全退出</span>
+                </div>
+            </a>
+        </div>
+        {/if}
+    </div>
+    
+    
+    <button type="button" class="layui-btn layui-btn-radius" style="position: fixed;;background-color:rgb(105,125,130);margin-left:89%;margin-top:40px;">
+        <a href="/index/title/index" style="color:white;"><i class="layui-icon">&#xe65c;</i>返回</a>
+    </button>
+    <img src="http://image.finance.china.cn/deco/2016/0224/f.gif" class="br">
+    <div class="br1"></div>
+    <!-- 数据 -->
+    <div class="nr1">
+        <h2 style="font-weight:600;margin-bottom: 15px;">{$new.title}</h2>
+        {$new.add_time}&nbsp;&nbsp;&nbsp;{$new.author}
+    </div>
+    <hr width="75%" style="margin-left:12%;">
+    <div class="nr2">
+        {$new.content}
+    </div>
+</body>
+</html>

@@ -1,0 +1,35 @@
+{extend name='comm/base'}
+{block name='box'}
+<form action="/Admin/Employee/ModifySave/id/{$emp.id}" method="POST">
+        <div class="form-group">
+            <label>员工姓名</label>
+            <input class="form-control" name="name" value='{$emp.name}'>
+        </div>
+        <div class="form-group">
+            <label>性别</label>
+            <select class="form-control" name="sex">
+                <option value="0" {if condition="0==$emp.sex"}selected{/if}>男</option>
+                <option value="1" {if condition="1==$emp.sex"}selected{/if}>女</option>
+            </select>
+        </div>
+        <div class="form-group">
+            <label>常用电话</label>
+            <input class="form-control" name="tel" value='{$emp.tel}'>
+        </div>
+        <div class="form-group">
+            <label>角色</label>
+            <select class="form-control" name="actor">
+                <!-- 因角色数据在数据库中，所以从后台获取 -->
+                {volist name='actor' id='a'}
+                    <option value="{$a.id}" 
+                        {if condition="$emp.actor_id == $a.id"}selected{/if}>
+                        {$a.name}
+                    </option>
+                {/volist}
+            </select>
+        </div>
+        <button class='btn btn-primary'>
+            提交
+        </button>
+    </form>
+{/block}

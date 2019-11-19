@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>好记小本后台管理系统</title>
+    <link rel="stylesheet" href="__STATIC__/bootstrap-4.1.3/css/bootstrap.min.css">
+    <link rel="stylesheet" href="__STATIC__/font-awesome-4.7.0/css/font-awesome.min.css">
+    <script src="__JS__/jquery-3.3.1.min.js"></script>
+    <script src="__STATIC__/bootstrap-4.1.3/js/popper.min.js"></script>
+    <script src="__STATIC__/bootstrap-4.1.3/js/bootstrap.min.js"></script>
+    <script src="__STATIC__/jquery-validation-1.19.0/dist/jquery.validate.min.js"></script>
+    <script src="__STATIC__/jquery-validation-1.19.0/dist/localization/messages_zh.js"></script>
+    <link rel="stylesheet" href="__STATIC__/layui-v2.5.5/layui/css/layui.css">
+    <script src="__STATIC__/layui-v2.5.5/layui/layui.js"></script>
+</head>
+<body>
+    <div style="height:20px;"></div>
+    <div class="container">
+        <!-- 留下一个占位符（挖坑） -->
+        {block name='box'}
+        {/block}
+        <script>
+            $(function(){
+                //1.完成全选操作
+                $('#ckAll').click(function(){
+                    $('input[name="ck"]').prop('checked',this.checked);
+                });
+                // 2：给thinkphp5的分页打补丁（分页样式采用Bootstrap4）
+                $('ul.pagination>li').addClass('page-item');
+                $('ul.pagination>li>a,span').addClass('page-link');
+            });
+        </script>
+    </div>
+</body>
+</html>

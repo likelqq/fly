@@ -1,0 +1,81 @@
+<!-- 在子页使用extend继承父页面（父页面是公共代码） -->
+{extend name='comm/base' /}
+<!-- 填充在父页面留下的占位符（目的：实现子页面自己的内容） -->
+{block name='box'}
+
+<font size="6">理财资讯管理中心</font><p></p>
+
+<style>
+    .button{
+        float:right;
+    }
+</style>
+
+    <form class="form-inline mb-2" method="GET" style="margin-top:20px">
+        <input class="form-control" placeholder="关键字" name="keyword" value="{$query.keyword|default=''}">
+        <button class="btn ml-2"><i class='fa fa-search'></i></button>
+    </form>
+
+    <div class="button">
+        <button class="btn  mb-2" onclick="window.location.href='add'">发布新资讯</button>
+        <button class="btn  mb-2" id='btnDel' type="button">批量删除</button>
+    </div>
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr hight="80">
+                <th width='40'><input type="checkbox" id="ckAll"></th>
+                <th>标题</th>
+                <th>作者</th>
+                <th>发布时间</th>
+                <th width='140'>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='list' id='ntc'}
+                <tr>
+                    <td><input type="checkbox" name="ck" value="{$ntc.id}"></td>
+                    <td>{$ntc->title}</td>
+                    <td>{$ntc->author}</td>
+                    <td>{$ntc->add_time}</td>
+                    <td>
+                        <a class="btn btn-sm btn-info" href='Edit/id/{$ntc.id}'>
+                            <i class="layui-icon">&#xe642;</i> 
+                        </a>
+                        <a class="btn btn-sm btn-secondary" href='Del/id/{$ntc.id}' onclick="return confirm('确实要删除吗？')">
+                            <i class="layui-icon">&#xe640;</i>  
+                        </a>
+                    </td>
+                </tr>
+            {/volist}
+        </tbody>
+    </table>
+    {$list->render()}
+    <script>
+        $(function(){
+            //完成批量删除功能
+            $('#btnDel').click(function(){
+                //1.有没有要删除的数据
+                var arr = [];
+                $('input[name="ck"]:checked').each(function(i){
+                    arr[i] = $(this).val();
+                });
+                if(arr.length ==0){
+                    layui.use('layer', function(){
+                        var layer = layui.layer;
+                        layer.msg('请选择要删除的数据！');
+                    });
+                    return false;
+                }
+                //2.确认要删除吗
+                if(confirm('确认要删除选择的数据吗？')){
+                    //3.提交到后台，执行真正的删除
+                    $.post('DelAll',{ids:arr.join(",")},function(msg){
+                        if(msg>0){
+                            location.reload();
+                        }
+                    });
+                }
+            });
+        });
+    </script>
+{/block}

@@ -1,0 +1,92 @@
+<!-- 继承comm文件夹里面的base代码   在子页使用extend继承父页面（父页面是公共代码）-->
+{extend name='comm/base' /}
+<!-- 填充在父页面中留下的占位符（目的：实现子页面自己的内容） -->
+{block name='box'}
+
+<font size="6">员工管理中心</font><p></p>
+
+<style>
+    .button{
+        float:right;
+    }
+</style>
+
+    <form class="form-inline mb-2" method="GET" style="margin-top:20px">
+        <input class="form-control" placeholder="关键字" name="keyword" value="{$query.keyword|default=''}">
+        <button class="btn ml-2"><i class='fa fa-search'></i></button>
+    </form>
+
+    <div class="button">
+        <button class="btn mb-2" onclick="window.location.href='add'">添加员工</button>
+        <button class="btn mb-2" id='btnDel' type="button">批量删除</button>
+    </div>
+    <table class="table table-bordered">
+        <thead>
+            <tr class="bg-light text-dark">
+                <th width='50'><input type='checkbox' id='ckAll'></input></th>
+                <th>员工号</th>
+                <th>员工姓名</th>
+                <th>性别</th>
+                <th>员工电话</th>
+                <th>角色</th>
+                <th width='170'>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='list' id='emp'}
+                <tr>
+                    <td><input type='checkbox' name='ck' value='{$emp.id}'></input></td>
+                    <td>{$emp->id}</td>
+                    <td>{$emp->name}</td>
+                    <td>
+                        {if condition="$emp.sex eq '0'"}
+                            <i class="layui-icon" style="color:blue;font-size: 20px;">&#xe662;</i>
+                        {else /} 
+                        <i class="layui-icon" style="color:rgb(250, 102, 127);font-size: 20px;">&#xe661;</i>
+                        {/if}
+                    </td>
+                    <td>{$emp->tel}</td>
+                    <td>{$emp.actor.name}</td>
+                    <td>
+                        <a class='btn btn-sm btn-info'
+                            href='Edit/id/{$emp.id}'>
+                            <i class="layui-icon">&#xe642;</i>  
+                        </a>
+                        <a class='btn btn-sm btn-secondary' 
+                            href='Del/id/{$emp.id}' 
+                            onclick="return confirm('确认删除？')">
+                            <i class="layui-icon">&#xe640;</i>  
+                        </a>
+                    </td>
+                </tr>
+            {/volist}
+        </tbody>
+    </table>
+    <script>
+        $(function(){
+            // 完成批量删除功能
+            $('#btnDel').click(function(){
+                // 1：有没有要删除的数据
+                var arr = [];
+                // echo() 遍历  : 表示选中
+                $('input[name="ck"]:checked').each(function(i){
+                    arr[i] = $(this).val();
+                });
+                if(arr.length==0){
+                    layui.use('layer', function(){
+                        var layer = layui.layer;
+                        layer.msg('请选择要删除的数据！');
+                    });
+                    return false;
+                }
+                // 2：确认删除
+                if(confirm('真的要删掉我吗 ? QAQ')){
+                    // 3：提交到后台执行真正的删除
+                    $.post('DelAll',{ids:arr.join(",")},function(msg){
+                        if(msg>0){ location.reload(); }
+                    });
+                }
+            });
+        });
+    </script>
+{/block}

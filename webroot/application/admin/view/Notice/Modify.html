@@ -1,0 +1,25 @@
+{extend name='comm/base'}
+{block name='box'}
+    <script src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+    <script src="__STATIC__/ueditor/ueditor.config.js"></script>
+    <script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
+    <form action="/admin/Notice/EditSave" method="POST">
+        <input type="hidden" name="id" value="{$notice.id}"> 
+        <div class="form-group">
+            <label for="title">标题</label>
+            <input class="form-control" value='{$notice.title}' name="title">
+        </div>
+        <div class="form-group">
+            <label for="add_time">发布时间</label>
+            <input class="form-control" value='{$notice.add_time}' name="add_time" onclick="WdatePicker({dateFmt:'yyyy-MM-dd H:mm:ss'})">
+        </div>
+        <div class="form-group">
+            <label for="content">内容</label>
+            <textarea class="form-control" name="content" id="content" type="text/type">{$notice.content}</textarea>
+        </div>
+        <button class="btn btn-primary">提交</button>
+    </form>
+    <!-- <script>
+        var ue = UE.getEditor('content');
+    </script> -->
+{/block}

@@ -1,0 +1,26 @@
+{extend name='comm/base' /}
+{block name='box'}
+<font size="6">用户信息中心</font><p></p>
+<table class="table table-bordered" style="margin-top:20px">
+    <thead>
+        <tr>
+            <th>用户名称</th>
+            <th>账号</th>
+            <th>性别</th>
+            <th>联系方式</th>
+        </tr>
+    </thead>
+    <tbody>
+        {volist name='list' id='c'}
+        <tr>
+            <td>{$c->name}</td>
+            <td>{$c->uid}</td>
+            <td style="font-size:18px">
+                <i class='fa fa-user {$c.sex? "text-danger":"text-primary"}'></i>
+            </td>
+            <td>{$c->tel}</td>
+        </tr>
+        {/volist}
+    </tbody>
+</table>
+{/block}

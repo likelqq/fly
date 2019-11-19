@@ -1,0 +1,114 @@
+{extend name='comm/base' /}
+{block name='box'}
+<script src="__STATIC__/My97DatePicker/WdatePicker.js"></script>
+<script src="__STATIC__/ueditor/ueditor.config.js"></script>
+<script src="__STATIC__/ueditor/ueditor.all.min.js"></script>
+    <script>
+    function edit(id){
+        if(id!=''){
+            $.post('GetOne',{web_key:id},function(rs){
+                $('#web_key').val(rs.web_key);
+                //$('#web_content').val(rs.web_content); //这个方法只针对表单控件
+                ue.setContent(htmlDecode(rs.web_content)); //定义百度编辑器控件
+            });
+        }
+    }
+    </script>
+    <font size="6">网站配置中心</font><p>
+    <table class="table table-bordered table-hover">
+        <thead class='thead-light'>
+            <tr>
+                <th width='120'>配置项</th>
+                <th>内容</th>
+                <th width='90'>操作</th>
+            </tr>
+        </thead>
+        <tbody>
+            {volist name='list' id='a'}
+                <tr>
+                    <td>{$a.web_key}</td>
+                    <td>{$a.web_content|substr=0,101}</td> <!--thinkphp5截断字符串 substr=0,101-->
+                    <td>
+                        <button class='btn btn-sm btn-info'
+                        data-toggle="modal" data-target="#myModal"
+                        onclick="edit('{$a.web_key}')">
+                            修改
+                        </button>
+                    </td>
+                </tr>
+            {/volist}
+        </tbody>
+    </table>
+
+     <!-- 模态框 -->
+  <div class="modal fade" id="myModal">
+        <div class="modal-dialog">
+          <div class="modal-content">
+       
+            <!-- 模态框主体 -->
+            <div class="modal-body">
+              <div class="form-group">
+                  <label>配置项</label>
+                  <input id='web_key' name='web_key' class='form-control' disabled>
+                  <textarea name="web_content" id="web_content" rows="5"></textarea>
+                <!--<script id="web_content" name="web_content" type="text/plain">{$a.web_content}</script> -->
+                  
+                </div>
+              <button type="button" class='btn btn-primary' id='btnSave'>提交</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">关闭</button>
+            </div>
+       
+          </div>
+        </div>
+      </div>
+
+    <script>
+        function htmlDecode(value) {
+            if (value) {
+                return $('<div />').html(value).text();
+            } else {
+                return '';
+            }
+        }
+
+        $(function(){
+            $('#btnSave').click(function(){
+                var id = $('#web_key').val();
+                //var name = $('#web_content').val();
+                var name = ue.getContent();
+                $.post('Save',{web_key:id, web_content:name},function(rs){
+                     location.reload(); 
+                });
+            });       
+        });
+        //调用百度编辑器
+        var ue = UE.getEditor('web_content',{
+            //这里可以选择自己需要的工具按钮名称,此处仅选择如下五个
+            toolbars:[[
+                'italic',
+                'snapscreen',
+                'indent',
+                'FullScreen', 
+                'Source', 
+                'Undo', 
+                'Redo',
+                'underline',
+                'fontborder', 
+                'source',
+                'formatmatch',
+                'fontfamily',
+                'fontsize',
+                'forecolor',
+                'autotypeset',
+                'gmap', 
+                'Bold',
+                'test']],
+            autoClearinitialContent:true,
+            wordCount:false,
+            elementPathEnabled:false,
+            initialFrameHeight:100,
+            zIndex : 2000,
+            serverUrl: 'server/ueditor/controller.php',
+        });
+    </script>
+{/block}
